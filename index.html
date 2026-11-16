@@ -18,9 +18,9 @@
   .head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:19px}
   .note-chip{font-size:12px;font-weight:700;padding:6px 9px;border:1px solid #32536d;background:#152838;border-radius:6px;color:#c6dfee}
   .preview{background:#121e2b;border:1px solid #294154;border-radius:12px;padding:18px 10px 17px}
-  .scroller{overflow:auto;display:flex;justify-content:center;padding:20px 7px 23px;min-height:250px}
+  .scroller{overflow-x:auto;overflow-y:hidden;display:flex;justify-content:flex-start;padding:20px 7px 23px;min-height:250px;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
   /* Exact same screen geometry as the hardware photo, in logical pixel proportions. */
-  .device{--scale:1.5;position:relative;flex:0 0 auto;width:calc(466px * var(--scale));height:calc(232px * var(--scale));background:linear-gradient(160deg,#373c43,#252b32);border:calc(2px * var(--scale)) solid #56616a;border-radius:calc(31px * var(--scale));box-shadow:0 12px 32px #02070a80,inset 0 0 0 calc(3px * var(--scale)) #222b34}
+  .device{--scale:1;position:relative;flex:0 0 auto;margin-inline:auto;width:calc(466px * var(--scale));height:calc(232px * var(--scale));background:linear-gradient(160deg,#373c43,#252b32);border:calc(2px * var(--scale)) solid #56616a;border-radius:calc(31px * var(--scale));box-shadow:0 12px 32px #02070a80,inset 0 0 0 calc(3px * var(--scale)) #222b34}
   .display{position:absolute;left:calc(42px * var(--scale));top:calc(40px * var(--scale));border:calc(6px * var(--scale)) solid #101a23;background:#001c35;border-radius:calc(7px * var(--scale));box-shadow:0 0 0 calc(2px * var(--scale)) #4a565d;line-height:0}
   canvas.mainCanvas{display:block;width:calc(240px * var(--scale));height:calc(135px * var(--scale));image-rendering:pixelated;background:var(--navy);filter:brightness(1)}
   .hardware-btn{cursor:pointer;position:absolute;transition:filter .12s,transform .12s;border:0}
@@ -63,8 +63,8 @@
   .velocityControls label{font-size:12px;color:#abc4d5;display:inline-flex;align-items:center;gap:6px}
   .liveStatus{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--yellow)}
   .led{width:7px;height:7px;background:var(--yellow);border-radius:1px}
-  @media(max-width:850px){.scroller{justify-content:flex-start}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:550px){body{padding:13px}.device{--scale:1 !important}.scroller{min-height:245px}.preview{padding:12px 4px}.head h1{font-size:21px}.action{padding:7px 8px}}
+  @media(max-width:850px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:550px){body{padding:13px}.scroller{min-height:245px}.preview{padding:12px 4px}.head h1{font-size:21px}.action{padding:7px 8px}}
   @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -84,7 +84,7 @@
  </div>
  <div class="legend">
   <div class="legendBtns"><button class="action" id="actionA"><strong>A</strong>Select / confirm</button><button class="action secondary" id="actionB"><strong>B</strong>Menu / next</button></div>
-  <div class="legendZoom"><label for="zoom">Display size</label><select id="zoom"><option value="1">1× · native pixels</option><option value="1.5" selected>1.5×</option><option value="2">2×</option><option value="2.5">2.5×</option></select></div>
+  <div class="legendZoom"><label for="zoom">Display size</label><select id="zoom"><option value="1" selected>1× · default</option><option value="1.5">1.5×</option><option value="2">2×</option><option value="2.5">2.5×</option></select></div>
  </div>
 
  <details class="demoTools">
@@ -104,7 +104,7 @@
   <span class="hint">Select the Rep result thumbnail below to view this example.</span>
  </div>
  </details>
- <div class="meta">Use the blue front button to select (A), and the top button to navigate (B). Double-press A to turn the display off and press A to wake it. All measurements are simulated. Audio plays after interaction.</div>
+ <div class="meta">Use the blue front button to select (A), and the top button to navigate (B). Double-press A to turn the display off and press A to wake it. All measurements are simulated. Audio plays after interaction. On phones, swipe horizontally to explore enlarged views.</div>
 </section>
 <div class="sectiontitle">Explore screens</div>
 <div class="tiles">
@@ -444,7 +444,17 @@ document.getElementById('demoVelocity').addEventListener('input',e=>{
   if(Number.isFinite(n))repVelocity=Math.min(2.99,Math.max(0,n));
   if(page==='rep')redraw();
 });
-document.getElementById('zoom').onchange=e=>document.getElementById('device').style.setProperty('--scale',e.target.value);
+const zoom=document.getElementById('zoom'),device=document.getElementById('device'),scroller=document.querySelector('.scroller');
+function resizePreview(){
+ const style=getComputedStyle(scroller);
+ const available=scroller.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight);
+ const fit=Math.min(1,Math.max(0,available)/466);
+ device.style.setProperty('--scale',String(fit*Number(zoom.value)));
+ scroller.scrollLeft=0;
+}
+zoom.addEventListener('change',resizePreview);
+window.addEventListener('resize',resizePreview);
+resizePreview();
 document.addEventListener('keydown',e=>{if(e.repeat||['SELECT','INPUT','TEXTAREA'].includes(e.target?.tagName))return;if(e.key.toLowerCase()==='a'){e.preventDefault();onA()}if(e.key.toLowerCase()==='b'){e.preventDefault();onB()}});
 document.querySelectorAll('.tile').forEach(b=>b.addEventListener('click',()=>{cancelPendingA();if(poweredOff){poweredOff=false;document.getElementById('powerOn').hidden=true}if(b.dataset.page==='rep'){repReturnPage='stream';setPage('rep')}else setPage(b.dataset.page)}));
 for(const c of document.querySelectorAll('canvas[data-thumb]')){const g=c.getContext('2d',{alpha:false});paint(g,c.dataset.thumb,true)}
