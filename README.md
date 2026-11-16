@@ -30,6 +30,16 @@ The goal is to make measuring, tracking, and using bar speed as straightforward 
 
 That's the aim, not a finished setup you can download and use just yet.
 
+## Hardware and mounting options
+
+If you'd like to see what I'm working with, here are the M5Stack parts I'm exploring:
+
+- [**M5StickS3 ESP32-S3 Mini IoT Dev Kit**](https://shop.m5stack.com/products/m5sticks3-esp32s3-mini-iot-dev-kit) — the proposed device core.
+- [**Watch Accessory Kit for M5Stick series**](https://shop.m5stack.com/products/watch-accessory-kit-for-m5stick-series) — a possible attachment option.
+- [**M5Stack Clip-A Brick Kit**](https://shop.m5stack.com/products/m5stack-clip-a-brick-kit?variant=45762860155137) — another mounting accessory to explore.
+
+These are links to the parts, **not a validated assembly guide**. Fit, retention on a moving barbell, and the final mounting arrangement still need testing.
+
 ## What I'm working towards
 
 - **Compact, bar-mounted hardware.** A lightweight device that attaches directly to the barbell without getting in the way or adding manual processing between sets.
