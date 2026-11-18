@@ -58,6 +58,16 @@ This is just a mock-up (which I got a little carried away with because I like UI
 
 The preview is designed around the M5StickS3's **240 × 135 display** and physical buttons. Measurements, calibration, and other device states are simulated for now.
 
+## Want to get started with VBT now?
+
+LFTVBT is still in development, but you don't have to wait to start experimenting with bar speed in your training!
+
+You can use the free [QWIK VBT](https://qwik-vbt.com/) to measure bar velocity using your phone, or pick up something like the [RepOne Tether](https://www.reponestrength.com/tether).
+
+I've also put together a **free [Load-Velocity Profile Generator and testing protocol](https://strengthcoaching.online/resources/load-velocity-profile-generator)**, with Google Sheets that automatically support data exports from both QWIK VBT and RepOne.
+
+The testing protocol walks you through an initial testing session to get all the measurements you need for your first load-velocity profile. The Load-Velocity Profile Generator then creates that profile, so you immediately have an estimated 1RM and a %1RM reference table to start using in your training.
+
 ## Early stages, big ambitions
 
 LFTVBT is still an experimental development project.
